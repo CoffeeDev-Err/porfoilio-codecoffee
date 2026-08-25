@@ -1,9 +1,8 @@
-import { useCallback, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { heroContent } from '../../data/content'
 import { profile } from '../../data/profile'
 import { useActionReveal, useHeroIntro, useHeroParallax } from '../../hooks/useHeroMotion'
 import MagicCard from '../MagicCard'
-import TextType from '../TextType'
 import CodeWindowBar from '../ui/CodeWindowBar'
 import VariableProximity from '../VariableProximity'
 
@@ -12,15 +11,10 @@ function Hero({ onNavigate }) {
   const contentRef = useRef(null)
   const nameRef = useRef(null)
   const actionsRef = useRef(null)
-  const [actionsVisible, setActionsVisible] = useState(false)
 
   useHeroIntro(sectionRef)
   useHeroParallax(sectionRef, contentRef)
-  useActionReveal(actionsRef, actionsVisible)
-
-  const handleTextUpdate = useCallback((value) => {
-    if (value.includes('Web')) setActionsVisible(true)
-  }, [])
+  useActionReveal(actionsRef, true)
 
   return (
     <section ref={sectionRef} id="home" className="relative flex min-h-screen items-center">
@@ -55,33 +49,22 @@ function Hero({ onNavigate }) {
               <span className="text-white/25">education:</span> &apos;{profile.education}&apos;
             </p>
 
-            <TextType
-              as="p"
+            <p
               data-intro="description"
               className="mt-4 max-w-2xl font-mono text-sm leading-7 text-white/60 sm:text-base"
-              text={heroContent.description}
-              typingSpeed={70}
-              initialDelay={300}
-              pauseDuration={1500}
-              deletingSpeed={24}
-              loop
-              onTextUpdate={handleTextUpdate}
-              showCursor
-              cursorCharacter="_"
-              cursorClassName="text-[#94a3b8]"
-              variableSpeed={{ min: 60, max: 100 }}
-            />
+            >
+              {heroContent.description}
+            </p>
 
             <div
               ref={actionsRef}
-              className={`mt-7 flex flex-wrap items-center gap-4 ${actionsVisible ? '' : 'pointer-events-none'}`}
+              className="mt-7 flex flex-wrap items-center gap-4"
             >
               <a
                 data-action-button
                 className="code-control code-control--purple border border-[#c084fc]/45 bg-[#c084fc]/10 px-5 py-3 font-mono text-xs text-[#e9d5ff]"
                 href="#projects"
                 onClick={(event) => onNavigate(event, '#projects')}
-                style={actionsVisible ? undefined : { opacity: 0, transform: 'translateY(14px)' }}
               >
                 ./view-projects
               </a>
@@ -91,7 +74,6 @@ function Hero({ onNavigate }) {
                 href={profile.githubUrl}
                 rel="noreferrer"
                 target="_blank"
-                style={actionsVisible ? undefined : { opacity: 0, transform: 'translateY(14px)' }}
               >
                 git checkout github
               </a>
@@ -101,7 +83,6 @@ function Hero({ onNavigate }) {
                 href={profile.linkedInUrl}
                 rel="noreferrer"
                 target="_blank"
-                style={actionsVisible ? undefined : { opacity: 0, transform: 'translateY(14px)' }}
               >
                 npm run connect
               </a>

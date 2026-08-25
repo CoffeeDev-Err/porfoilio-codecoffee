@@ -41,7 +41,7 @@ imageUrl: '/profile.png',
 
 Files inside `public` are referenced from `/`; do not include `public` in the browser URL.
 
-## Centralized heading and typing text
+## Centralized headings and hero text
 
 All section titles and descriptions are in [`src/data/content.js`](src/data/content.js):
 
@@ -152,7 +152,7 @@ Use `Present` while currently studying. Replace it with the graduation year afte
 
 | Editable item or behavior | Source file | Export/component |
 | --- | --- | --- |
-| Hero eyebrow and typing text | `src/data/content.js` | `heroContent` |
+| Hero eyebrow and static description | `src/data/content.js` | `heroContent` |
 | Section numbers, headings, descriptions | `src/data/content.js` | `sectionContent` |
 | Name, role, education, profile image, and links | `src/data/profile.js` | `profile` |
 | Education timeline entries | `src/data/education.js` | `educationHistory` |
