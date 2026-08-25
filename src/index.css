@@ -1,18 +1,350 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
 @import "tailwindcss";
 
+:root {
+	color-scheme: dark;
+	--page-background: #120f17;
+	--surface-shadow: 0 22px 70px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.025);
+	--window-bar-background: rgba(255, 255, 255, 0.018);
+	--selection-background: rgba(192, 132, 252, 0.3);
+	--selection-text: #ffffff;
+	--scrollbar-track: #120f17;
+	--scrollbar-thumb: rgba(192, 132, 252, 0.3);
+	--card-hover-border: rgba(134, 239, 172, 0.46);
+	--card-hover-shadow: 0 28px 75px rgba(0, 0, 0, 0.34), 0 0 34px rgba(134, 239, 172, 0.09), inset 0 0 0 999px rgba(134, 239, 172, 0.018);
+	--project-card-background: rgba(23, 19, 31, 0.72);
+	--timeline-accent: 192, 132, 252;
+	--timeline-current: 134, 239, 172;
+}
+
+:root[data-theme="light"] {
+	color-scheme: light;
+	--page-background: #f7f5fa;
+	--surface-shadow: 0 20px 60px rgba(70, 47, 84, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+	--window-bar-background: rgba(84, 53, 102, 0.035);
+	--selection-background: rgba(126, 34, 206, 0.2);
+	--selection-text: #211827;
+	--scrollbar-track: #f7f5fa;
+	--scrollbar-thumb: rgba(126, 34, 206, 0.28);
+	--card-hover-border: rgba(126, 34, 206, 0.42);
+	--card-hover-shadow: 0 26px 70px rgba(70, 47, 84, 0.17), 0 0 30px rgba(126, 34, 206, 0.1), inset 0 0 0 999px rgba(126, 34, 206, 0.025);
+	--project-card-background: rgba(255, 255, 255, 0.88);
+	--timeline-accent: 126, 34, 206;
+	--timeline-current: 21, 128, 61;
+}
+
 html,
 body,
 #root {
 	width: 100%;
-	height: 100%;
 	margin: 0;
 }
 
 body {
+	min-height: 100vh;
 	overflow-x: hidden;
-	overflow-y: hidden;
-	background: #120f17;
+	background: var(--page-background);
+	font-family: "Roboto Flex", system-ui, sans-serif;
+	transition: background-color 0.5s ease;
 }
 
+::selection {
+	background: var(--selection-background);
+	color: var(--selection-text);
+}
 
+* {
+	scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+	scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+	border: 3px solid var(--scrollbar-track);
+	border-radius: 999px;
+	background: var(--scrollbar-thumb);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+	outline: 2px solid #c084fc;
+	outline-offset: 4px;
+}
+
+.code-surface {
+	box-shadow: var(--surface-shadow);
+	transition: border-color 0.3s ease, background-color 0.5s ease, box-shadow 0.35s ease, top 0.35s ease;
+}
+
+.code-card {
+	top: 0;
+}
+
+.project-card-surface {
+	background-color: var(--project-card-background);
+}
+
+.code-window-bar {
+	background: var(--window-bar-background);
+	transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+
+.education-rail {
+	background: linear-gradient(to bottom, transparent, rgba(var(--timeline-accent), 0.5) 12%, rgba(var(--timeline-accent), 0.5) 88%, transparent);
+}
+
+.education-connector {
+	background: rgba(var(--timeline-accent), 0.4);
+}
+
+.education-node {
+	border: 3px solid var(--page-background);
+	background: rgb(var(--timeline-accent));
+	box-shadow: 0 0 0 3px rgba(var(--timeline-accent), 0.2), 0 0 18px rgba(var(--timeline-accent), 0.26);
+}
+
+.education-node--current {
+	background: rgb(var(--timeline-current));
+	box-shadow: 0 0 0 3px rgba(var(--timeline-current), 0.18), 0 0 20px rgba(var(--timeline-current), 0.3);
+}
+
+.mobile-menu-panel {
+	height: 0;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-8px);
+}
+
+.mobile-menu-item {
+	opacity: 0;
+	transform: translateX(-8px);
+}
+
+/* Light theme mappings for the coding palette. Keeping these mappings here
+   lets components retain one readable set of utility classes. */
+:root[data-theme="light"] [class~="bg-[#120f17]"],
+:root[data-theme="light"] [class~="bg-[#120f17]/55"],
+:root[data-theme="light"] [class~="bg-[#120f17]/60"] {
+	background-color: rgba(247, 245, 250, 0.82) !important;
+}
+
+:root[data-theme="light"] [class~="bg-[#120f17]/85"] {
+	background-color: rgba(247, 245, 250, 0.9) !important;
+}
+
+:root[data-theme="light"] [class~="bg-[#17131f]"],
+:root[data-theme="light"] [class~="bg-[#17131f]/65"],
+:root[data-theme="light"] [class~="bg-[#17131f]/75"],
+:root[data-theme="light"] [class~="bg-[#17131f]/80"] {
+	background-color: rgba(255, 255, 255, 0.84) !important;
+}
+
+:root[data-theme="light"] [class~="bg-[#110e17]"],
+:root[data-theme="light"] [class~="bg-[#0d0b12]"] {
+	background-color: #eee9f2 !important;
+}
+
+:root[data-theme="light"] [class~="bg-white/5"] {
+	background-color: rgba(54, 39, 65, 0.045) !important;
+}
+
+:root[data-theme="light"] .text-white {
+	color: #211827 !important;
+}
+
+:root[data-theme="light"] [class~="text-white/85"] {
+	color: rgba(33, 24, 39, 0.86) !important;
+}
+
+:root[data-theme="light"] [class~="text-white/70"],
+:root[data-theme="light"] [class~="text-white/65"],
+:root[data-theme="light"] [class~="text-white/60"] {
+	color: rgba(33, 24, 39, 0.68) !important;
+}
+
+:root[data-theme="light"] [class~="text-white/55"],
+:root[data-theme="light"] [class~="text-white/50"],
+:root[data-theme="light"] [class~="text-white/45"] {
+	color: rgba(33, 24, 39, 0.58) !important;
+}
+
+:root[data-theme="light"] [class~="text-white/40"],
+:root[data-theme="light"] [class~="text-white/35"],
+:root[data-theme="light"] [class~="text-white/30"] {
+	color: rgba(33, 24, 39, 0.46) !important;
+}
+
+:root[data-theme="light"] [class~="text-white/25"],
+:root[data-theme="light"] [class~="text-white/20"] {
+	color: rgba(33, 24, 39, 0.34) !important;
+}
+
+:root[data-theme="light"] [class~="text-[#c084fc]"],
+:root[data-theme="light"] [class~="text-[#c084fc]/65"] {
+	color: #7e22ce !important;
+}
+
+:root[data-theme="light"] [class~="text-[#86efac]"],
+:root[data-theme="light"] [class~="text-[#86efac]/70"],
+:root[data-theme="light"] [class~="text-[#86efac]/75"],
+:root[data-theme="light"] [class~="text-[#86efac]/80"] {
+	color: #15803d !important;
+}
+
+:root[data-theme="light"] [class~="text-[#93c5fd]"],
+:root[data-theme="light"] [class~="text-[#93c5fd]/30"] {
+	color: #2563eb !important;
+}
+
+:root[data-theme="light"] [class~="text-[#c2cede]"],
+:root[data-theme="light"] [class~="text-[#94a3b8]/55"] {
+	color: #526071 !important;
+}
+
+:root[data-theme="light"] [class~="text-[#e9d5ff]"],
+:root[data-theme="light"] [class~="text-[#e9d5ff]/45"] {
+	color: #6b21a8 !important;
+}
+
+:root[data-theme="light"] [class~="border-white/8"],
+:root[data-theme="light"] [class~="border-white/10"],
+:root[data-theme="light"] [class~="border-white/12"],
+:root[data-theme="light"] [class~="border-white/14"],
+:root[data-theme="light"] [class~="border-white/15"],
+:root[data-theme="light"] [class~="border-white/20"] {
+	border-color: rgba(47, 35, 56, 0.14) !important;
+}
+
+:root[data-theme="light"] [class~="hover:text-white"]:hover,
+:root[data-theme="light"] .group:hover [class~="group-hover:text-white"] {
+	color: #211827 !important;
+}
+
+:root[data-theme="light"] [class~="hover:border-white/25"]:hover {
+	border-color: rgba(47, 35, 56, 0.28) !important;
+}
+
+:root[data-theme="light"] [class*="bg-black"][class*="text-white"] {
+	color: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Shared hover language for cards, chips, controls, and text links. */
+.code-control,
+.code-chip,
+.code-scroll-link,
+.code-scroll-track,
+.code-scroll-dot,
+.code-text-link {
+	transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, translate 0.25s ease;
+}
+
+.code-control--purple {
+	--control-accent: #d8b4fe;
+	--control-rgb: 192, 132, 252;
+}
+
+.code-control--green {
+	--control-accent: #86efac;
+	--control-rgb: 134, 239, 172;
+}
+
+.code-control--blue {
+	--control-accent: #93c5fd;
+	--control-rgb: 147, 197, 253;
+}
+
+:root[data-theme="light"] .code-control--purple {
+	--control-accent: #7e22ce;
+	--control-rgb: 126, 34, 206;
+}
+
+:root[data-theme="light"] .code-control--green {
+	--control-accent: #15803d;
+	--control-rgb: 21, 128, 61;
+}
+
+:root[data-theme="light"] .code-control--blue {
+	--control-accent: #1d4ed8;
+	--control-rgb: 37, 99, 235;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.code-card:hover {
+		border-color: var(--card-hover-border) !important;
+		box-shadow: var(--card-hover-shadow);
+		top: -5px;
+	}
+
+	:root[data-theme="light"] .code-card:hover {
+		border-color: var(--card-hover-border) !important;
+	}
+
+	.code-control:hover {
+		border-color: rgba(var(--control-rgb), 0.62) !important;
+		background-color: rgba(var(--control-rgb), 0.11) !important;
+		box-shadow: 0 10px 28px rgba(var(--control-rgb), 0.14), inset 0 0 0 1px rgba(var(--control-rgb), 0.05);
+		color: var(--control-accent) !important;
+		translate: 0 -2px;
+	}
+
+	:root[data-theme="light"] .code-control:hover {
+		border-color: rgba(var(--control-rgb), 0.62) !important;
+		background-color: rgba(var(--control-rgb), 0.11) !important;
+		color: var(--control-accent) !important;
+	}
+
+	.code-chip:hover {
+		border-color: rgba(134, 239, 172, 0.52) !important;
+		background-color: rgba(134, 239, 172, 0.08) !important;
+		box-shadow: 0 8px 24px rgba(134, 239, 172, 0.1);
+		color: #bbf7d0 !important;
+		translate: 0 -2px;
+	}
+
+	:root[data-theme="light"] .code-chip:hover {
+		border-color: rgba(21, 128, 61, 0.5) !important;
+		background-color: rgba(21, 128, 61, 0.08) !important;
+		box-shadow: 0 8px 24px rgba(21, 128, 61, 0.13);
+		color: #166534 !important;
+	}
+
+	.code-scroll-link:hover {
+		color: #86efac !important;
+		translate: 3px 0;
+	}
+
+	.code-scroll-link:hover .code-scroll-track {
+		border-color: rgba(134, 239, 172, 0.55) !important;
+		box-shadow: 0 0 18px rgba(134, 239, 172, 0.16);
+	}
+
+	.code-scroll-link:hover .code-scroll-dot {
+		background-color: #86efac !important;
+	}
+
+	:root[data-theme="light"] .code-scroll-link:hover,
+	:root[data-theme="light"] .code-text-link:hover {
+		color: #15803d !important;
+	}
+
+	:root[data-theme="light"] .code-scroll-link:hover .code-scroll-track {
+		border-color: rgba(21, 128, 61, 0.48) !important;
+		box-shadow: 0 0 18px rgba(21, 128, 61, 0.12);
+	}
+
+	:root[data-theme="light"] .code-scroll-link:hover .code-scroll-dot {
+		background-color: #15803d !important;
+	}
+
+	.code-text-link:hover {
+		color: #86efac !important;
+		translate: 0 -1px;
+	}
+}

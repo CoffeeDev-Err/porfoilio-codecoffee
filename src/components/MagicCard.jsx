@@ -36,6 +36,36 @@ function MagicCard({
   const particlesRef = useRef([])
   const timeoutsRef = useRef([])
   const isHoveredRef = useRef(false)
+  const motionSettersRef = useRef(null)
+
+  useEffect(() => {
+    const card = cardRef.current
+    if (!card || disableAnimations) return
+
+    gsap.set(card, { transformPerspective: 1000 })
+    const setters = {}
+
+    if (enableTilt) {
+      setters.rotateX = gsap.quickTo(card, 'rotateX', { duration: 0.3, ease: 'power3.out' })
+      setters.rotateY = gsap.quickTo(card, 'rotateY', { duration: 0.3, ease: 'power3.out' })
+    }
+
+    if (enableMagnetism) {
+      setters.x = gsap.quickTo(card, 'x', { duration: 0.3, ease: 'power3.out' })
+      setters.y = gsap.quickTo(card, 'y', { duration: 0.3, ease: 'power3.out' })
+    }
+
+    motionSettersRef.current = setters
+
+    return () => {
+      const setters = motionSettersRef.current
+      if (setters) {
+        Object.values(setters).forEach((setter) => setter.tween.kill())
+      }
+      motionSettersRef.current = null
+      gsap.set(card, { clearProps: 'transform' })
+    }
+  }, [disableAnimations, enableMagnetism, enableTilt])
 
   const clearParticles = useCallback(() => {
     timeoutsRef.current.forEach(clearTimeout)
@@ -103,16 +133,9 @@ function MagicCard({
   }, [disableAnimations, enableStars, glowColor, particleCount])
 
   const resetCard = useCallback(() => {
-    if (!cardRef.current) return
+    if (!cardRef.current || !motionSettersRef.current) return
 
-    gsap.to(cardRef.current, {
-      rotateX: 0,
-      rotateY: 0,
-      x: 0,
-      y: 0,
-      duration: 0.35,
-      ease: 'power2.out',
-    })
+    Object.values(motionSettersRef.current).forEach((setter) => setter(0))
 
     cardRef.current.style.setProperty('--glow-intensity', '0')
   }, [])
@@ -144,24 +167,15 @@ function MagicCard({
     cardRef.current.style.setProperty('--glow-intensity', '1')
     cardRef.current.style.setProperty('--glow-radius', `${spotlightRadius}px`)
 
-    if (enableTilt || enableMagnetism) {
-      const nextProps = {
-        duration: 0.2,
-        ease: 'power2.out',
-        transformPerspective: 1000,
-      }
+    const setters = motionSettersRef.current
+    if (enableTilt && setters) {
+      setters.rotateX(((y - centerY) / centerY) * -8)
+      setters.rotateY(((x - centerX) / centerX) * 8)
+    }
 
-      if (enableTilt) {
-        nextProps.rotateX = ((y - centerY) / centerY) * -8
-        nextProps.rotateY = ((x - centerX) / centerX) * 8
-      }
-
-      if (enableMagnetism) {
-        nextProps.x = (x - centerX) * 0.04
-        nextProps.y = (y - centerY) * 0.04
-      }
-
-      gsap.to(cardRef.current, nextProps)
+    if (enableMagnetism && setters) {
+      setters.x((x - centerX) * 0.04)
+      setters.y((y - centerY) * 0.04)
     }
   }
 
@@ -210,7 +224,7 @@ function MagicCard({
   return (
     <div
       ref={cardRef}
-      className={`group relative overflow-hidden [transform-style:preserve-3d] ${className}`}
+      className={`code-surface code-card group relative overflow-hidden [transform-style:preserve-3d] ${className}`}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
