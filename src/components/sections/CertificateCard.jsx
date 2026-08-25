@@ -3,7 +3,7 @@ import { useState } from 'react'
 // A single certificate thumbnail. Shows the scanned image; if it fails to
 // load, falls back to a branded placeholder so the grid never looks broken.
 function CertificateCard({ certificate, onOpen, index = 0 }) {
-  const { title, type, dateLabel, issuer, image } = certificate
+  const { title, type, dateLabel, issuer, thumbnail } = certificate
   const [imageFailed, setImageFailed] = useState(false)
 
   return (
@@ -21,9 +21,11 @@ function CertificateCard({ certificate, onOpen, index = 0 }) {
       <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-white/8">
         {!imageFailed ? (
           <img
-            src={image}
+            src={thumbnail}
             alt={`${title} certificate`}
-            loading={index < 6 ? 'eager' : 'lazy'}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
             onError={() => setImageFailed(true)}
             className="h-full w-full object-cover object-top transition duration-500 group-hover:scale-[1.04]"
           />

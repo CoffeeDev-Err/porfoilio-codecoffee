@@ -167,6 +167,7 @@ Use `Present` while currently studying. Replace it with the graduation year afte
 | Scroll-direction header visibility | `src/hooks/useHeaderVisibility.js` | `useHeaderVisibility` |
 | Mobile menu open/close animation | `src/hooks/useMobileMenuMotion.js` | `useMobileMenuMotion` |
 | Hero entrance, parallax, and button motion | `src/hooks/useHeroMotion.js` | Hero motion hooks |
+| Shared scroll/resize frame scheduler | `src/utils/viewportScheduler.js` | `subscribeToViewportUpdates` |
 | Reusable scroll reveal | `src/components/Reveal.jsx` | `Reveal` |
 | Reusable interactive cards | `src/components/MagicCard.jsx` | `MagicCard` |
 | Reusable editor window bar | `src/components/ui/CodeWindowBar.jsx` | `CodeWindowBar` |
@@ -174,6 +175,7 @@ Use `Present` while currently studying. Replace it with the graduation year afte
 | Dark/light color tokens and mappings | `src/index.css` | CSS variables and theme selectors |
 | Animated grid colors | `src/components/layout/SiteBackground.jsx` | `SiteBackground` |
 | Header, active nav, and theme command | `src/components/layout/Header.jsx` | `Header` |
+| Top-page scroll progress indicator | `src/components/layout/ScrollProgress.jsx` | `ScrollProgress` |
 
 ## Content still local to a section
 
@@ -198,6 +200,15 @@ The top bar intentionally keeps only the primary links: About, Skills, Projects,
 `src/components/Reveal.jsx` uses reversible viewport animation by default. Content reveals when it enters from either scroll direction, then resets only after it has fully left the viewport so it can animate again when revisited.
 
 Reveal directions remain active even when the operating system disables general UI animations, so the portfolio retains its intended left, right, and vertical slide effects.
+
+## Performance behavior
+
+- `src/utils/viewportScheduler.js` gives reveals, the header, and hero parallax one shared scroll/resize listener and one animation-frame batch.
+- `src/components/layout/ScrollProgress.jsx` uses that same scheduler and updates only a GPU-friendly horizontal scale transform.
+- `src/components/ShapeGrid.jsx` renders at a capped frame rate and pauses expensive canvas drawing during active scrolling, hidden tabs, and open dialogs.
+- `src/components/MagicCard.jsx` batches pointer updates into animation frames and reuses the card bounds while hovered.
+- Certificate cards load small files from `public/certificates/thumbnails`; lightboxes use the web-sized files in `public/certificates/display`. Original uploads remain in `public/certificates`.
+- Mobile cards disable backdrop filtering to reduce GPU compositing work while preserving their surface colors.
 
 ## Validation
 

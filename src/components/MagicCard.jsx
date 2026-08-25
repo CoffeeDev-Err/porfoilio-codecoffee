@@ -37,6 +37,9 @@ function MagicCard({
   const timeoutsRef = useRef([])
   const isHoveredRef = useRef(false)
   const motionSettersRef = useRef(null)
+  const boundsRef = useRef(null)
+  const pointerFrameRef = useRef(0)
+  const pointerPositionRef = useRef(null)
 
   useEffect(() => {
     const card = cardRef.current
@@ -72,6 +75,7 @@ function MagicCard({
     timeoutsRef.current = []
 
     particlesRef.current.forEach((particle) => {
+      gsap.killTweensOf(particle)
       gsap.to(particle, {
         scale: 0,
         opacity: 0,
@@ -87,6 +91,7 @@ function MagicCard({
   useEffect(() => {
     return () => {
       clearParticles()
+      if (pointerFrameRef.current) cancelAnimationFrame(pointerFrameRef.current)
     }
   }, [clearParticles])
 
@@ -140,32 +145,42 @@ function MagicCard({
     cardRef.current.style.setProperty('--glow-intensity', '0')
   }, [])
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (event) => {
     if (disableAnimations) return
     isHoveredRef.current = true
+    boundsRef.current = event.currentTarget.getBoundingClientRect()
     spawnParticles()
   }
 
   const handleMouseLeave = () => {
     if (disableAnimations) return
     isHoveredRef.current = false
+    boundsRef.current = null
+    pointerPositionRef.current = null
+    if (pointerFrameRef.current) {
+      cancelAnimationFrame(pointerFrameRef.current)
+      pointerFrameRef.current = 0
+    }
     clearParticles()
     resetCard()
   }
 
-  const handleMouseMove = (event) => {
-    if (disableAnimations || !cardRef.current) return
+  const updatePointerEffects = () => {
+    pointerFrameRef.current = 0
+    const card = cardRef.current
+    const rect = boundsRef.current
+    const pointer = pointerPositionRef.current
+    if (!card || !rect || !pointer || !isHoveredRef.current) return
 
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
+    const x = pointer.x - rect.left
+    const y = pointer.y - rect.top
     const centerX = rect.width / 2
     const centerY = rect.height / 2
 
-    cardRef.current.style.setProperty('--glow-x', `${(x / rect.width) * 100}%`)
-    cardRef.current.style.setProperty('--glow-y', `${(y / rect.height) * 100}%`)
-    cardRef.current.style.setProperty('--glow-intensity', '1')
-    cardRef.current.style.setProperty('--glow-radius', `${spotlightRadius}px`)
+    card.style.setProperty('--glow-x', `${(x / rect.width) * 100}%`)
+    card.style.setProperty('--glow-y', `${(y / rect.height) * 100}%`)
+    card.style.setProperty('--glow-intensity', '1')
+    card.style.setProperty('--glow-radius', `${spotlightRadius}px`)
 
     const setters = motionSettersRef.current
     if (enableTilt && setters) {
@@ -179,10 +194,19 @@ function MagicCard({
     }
   }
 
-  const handleClick = (event) => {
-    if (!clickEffect || disableAnimations || !cardRef.current) return
+  const handleMouseMove = (event) => {
+    if (disableAnimations || !cardRef.current) return
+    pointerPositionRef.current = { x: event.clientX, y: event.clientY }
 
-    const rect = cardRef.current.getBoundingClientRect()
+    if (!pointerFrameRef.current) {
+      pointerFrameRef.current = requestAnimationFrame(updatePointerEffects)
+    }
+  }
+
+  const handleClick = (event) => {
+    if (!clickEffect || disableAnimations || !cardRef.current || event.detail === 0) return
+
+    const rect = boundsRef.current || cardRef.current.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
 

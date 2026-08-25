@@ -1,4 +1,5 @@
 import Header from './components/layout/Header'
+import ScrollProgress from './components/layout/ScrollProgress'
 import SiteBackground from './components/layout/SiteBackground'
 import About from './components/sections/About'
 import Certificates from './components/sections/Certificates'
@@ -21,6 +22,7 @@ function App() {
       className="relative min-h-screen w-full overflow-x-clip bg-[#120f17] text-white transition-colors duration-500"
     >
       <SiteBackground theme={theme} />
+      <ScrollProgress />
 
       <div className="relative z-10">
         <Header theme={theme} onToggleTheme={toggleTheme} onNavigate={navigateToSection} />

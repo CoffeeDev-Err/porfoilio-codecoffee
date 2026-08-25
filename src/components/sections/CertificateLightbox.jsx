@@ -38,7 +38,7 @@ function CertificateLightbox({ certificate, onClose }) {
       aria-modal="true"
       aria-label={`${title} certificate`}
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm sm:p-8"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 sm:p-8"
     >
       <div
         onClick={(event) => event.stopPropagation()}
@@ -62,6 +62,7 @@ function CertificateLightbox({ certificate, onClose }) {
             <img
               src={image}
               alt={`${title} certificate`}
+              decoding="async"
               onError={() => setFailedId(certificate.id)}
               className="max-h-[70vh] w-auto max-w-full object-contain shadow-lg"
             />

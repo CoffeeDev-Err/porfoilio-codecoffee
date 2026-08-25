@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect } from 'react'
 import { gsap } from 'gsap'
+import { subscribeToViewportUpdates } from '../utils/viewportScheduler'
 
 const clampProgress = (value) => Math.min(Math.max(value, 0), 1)
 
@@ -40,26 +41,17 @@ export function useHeroParallax(sectionRef, contentRef) {
       ease: 'power2.out',
     })
 
-    let frameId = 0
     const update = () => {
-      frameId = 0
       const sectionTop = section.getBoundingClientRect().top
       const progress = clampProgress(-sectionTop / Math.max(section.offsetHeight * 0.85, 1))
       setY(-9 * progress)
       setOpacity(1 - 0.72 * progress)
     }
-    const scheduleUpdate = () => {
-      if (!frameId) frameId = requestAnimationFrame(update)
-    }
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true })
-    window.addEventListener('resize', scheduleUpdate)
+    const unsubscribe = subscribeToViewportUpdates(update)
     update()
 
     return () => {
-      window.removeEventListener('scroll', scheduleUpdate)
-      window.removeEventListener('resize', scheduleUpdate)
-      if (frameId) cancelAnimationFrame(frameId)
+      unsubscribe()
       setY.tween.kill()
       setOpacity.tween.kill()
     }

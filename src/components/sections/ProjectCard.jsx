@@ -38,6 +38,7 @@ function ProjectCard({ project, index, onView, variant = 'client' }) {
       enableTilt={false}
       enableMagnetism={false}
       enableStars={false}
+      clickEffect={false}
       spotlightRadius={360}
     >
       <article className="relative z-10 flex h-full flex-col p-6 sm:p-7">

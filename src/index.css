@@ -348,3 +348,12 @@ body {
 		translate: 0 -1px;
 	}
 }
+
+/* Backdrop filtering across many cards is costly on mobile GPUs. The surfaces
+   already have sufficient contrast, so small screens use their base colors. */
+@media (max-width: 767px) {
+	.code-surface {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
+	}
+}

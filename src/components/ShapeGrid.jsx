@@ -1,5 +1,8 @@
 import { useRef, useEffect } from 'react';
 
+const TARGET_FRAME_INTERVAL = 1000 / 30;
+const SCROLL_IDLE_DELAY = 120;
+
 const ShapeGrid = ({
   direction = 'right',
   speed = 1,
@@ -23,6 +26,12 @@ const ShapeGrid = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let fadeGradient = null;
+    let lastDrawTime = 0;
+    let scrollIdleTimer = 0;
+    let isScrolling = false;
 
     const isHex = shape === 'hexagon';
     const isTri = shape === 'triangle';
@@ -30,10 +39,25 @@ const ShapeGrid = ({
     const hexVert = squareSize * Math.sqrt(3);
 
     const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const width = Math.round(canvas.offsetWidth);
+      const height = Math.round(canvas.offsetHeight);
+      if (!width || !height || (canvas.width === width && canvas.height === height)) return;
+
+      canvas.width = width;
+      canvas.height = height;
       numSquaresX.current = Math.ceil(canvas.width / squareSize) + 1;
       numSquaresY.current = Math.ceil(canvas.height / squareSize) + 1;
+
+      fadeGradient = ctx.createRadialGradient(
+        canvas.width / 2,
+        canvas.height / 2,
+        0,
+        canvas.width / 2,
+        canvas.height / 2,
+        Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2
+      );
+      fadeGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      fadeGradient.addColorStop(1, fadeColor);
     };
 
     window.addEventListener('resize', resizeCanvas);
@@ -191,25 +215,31 @@ const ShapeGrid = ({
         }
       }
 
-      const gradient = ctx.createRadialGradient(
-        canvas.width / 2,
-        canvas.height / 2,
-        0,
-        canvas.width / 2,
-        canvas.height / 2,
-        Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2
-      );
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      gradient.addColorStop(1, fadeColor);
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (fadeGradient) {
+        ctx.fillStyle = fadeGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
     };
 
-    const updateAnimation = () => {
-      const effectiveSpeed = Math.max(speed, 0.1);
+    const updateAnimation = (timestamp) => {
+      const modalOpen = document.body.style.overflow === 'hidden';
+      const shouldDraw = !document.hidden && !isScrolling && !modalOpen;
+      const elapsed = timestamp - lastDrawTime;
+
+      if (!shouldDraw || elapsed < TARGET_FRAME_INTERVAL) {
+        if (!shouldDraw) lastDrawTime = timestamp;
+        requestRef.current = requestAnimationFrame(updateAnimation);
+        return;
+      }
+
+      const frameScale = lastDrawTime
+        ? Math.min(elapsed / (1000 / 60), 2)
+        : 1;
+      const effectiveSpeed = Math.max(speed, 0.1) * frameScale;
       const wrapX = isHex ? hexHoriz * 2 : squareSize;
       const wrapY = isHex ? hexVert : isTri ? squareSize * 2 : squareSize;
+
+      lastDrawTime = timestamp;
 
       switch (direction) {
         case 'right':
@@ -272,20 +302,19 @@ const ShapeGrid = ({
     };
 
     const handleMouseMove = (event) => {
-      const rect = canvas.getBoundingClientRect();
       const isInsideCanvas =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom;
+        event.clientX >= 0 &&
+        event.clientX <= canvas.width &&
+        event.clientY >= 0 &&
+        event.clientY <= canvas.height;
 
       if (!isInsideCanvas) {
         handleMouseLeave();
         return;
       }
 
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
 
       if (isHex) {
         const colShift = Math.floor(gridOffset.current.x / hexHoriz);
@@ -384,19 +413,31 @@ const ShapeGrid = ({
       hoveredSquareRef.current = null;
     };
 
+    const handleScroll = () => {
+      isScrolling = true;
+      window.clearTimeout(scrollIdleTimer);
+      scrollIdleTimer = window.setTimeout(() => {
+        isScrolling = false;
+      }, SCROLL_IDLE_DELAY);
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('blur', handleMouseLeave);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    drawGrid();
     requestRef.current = requestAnimationFrame(updateAnimation);
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('blur', handleMouseLeave);
+      window.removeEventListener('scroll', handleScroll);
+      window.clearTimeout(scrollIdleTimer);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, [direction, speed, borderColor, fadeColor, hoverFillColor, squareSize, shape, hoverTrailAmount]);
 
-  return <canvas ref={canvasRef} className="w-full h-full border-none block"></canvas>;
+  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none block h-full w-full border-none"></canvas>;
 };
 
 export default ShapeGrid;

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { subscribeToViewportUpdates } from '../utils/viewportScheduler'
 
 const TOP_THRESHOLD = 88
 const DIRECTION_THRESHOLD = 4
@@ -12,7 +13,6 @@ export function useHeaderVisibility(headerRef, { locked = false } = {}) {
     const header = headerRef.current
     if (!header) return
 
-    let frameId = 0
     lastScrollYRef.current = window.scrollY
 
     const setHidden = (hidden) => {
@@ -28,7 +28,6 @@ export function useHeaderVisibility(headerRef, { locked = false } = {}) {
     }
 
     const updateHeader = () => {
-      frameId = 0
       const currentScrollY = Math.max(window.scrollY, 0)
       const delta = currentScrollY - lastScrollYRef.current
 
@@ -41,16 +40,11 @@ export function useHeaderVisibility(headerRef, { locked = false } = {}) {
       lastScrollYRef.current = currentScrollY
     }
 
-    const scheduleUpdate = () => {
-      if (!frameId) frameId = requestAnimationFrame(updateHeader)
-    }
-
     if (locked) setHidden(false)
-    window.addEventListener('scroll', scheduleUpdate, { passive: true })
+    const unsubscribe = subscribeToViewportUpdates(updateHeader)
 
     return () => {
-      window.removeEventListener('scroll', scheduleUpdate)
-      if (frameId) cancelAnimationFrame(frameId)
+      unsubscribe()
       gsap.killTweensOf(header, 'yPercent')
     }
   }, [headerRef, locked])

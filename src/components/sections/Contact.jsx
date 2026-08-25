@@ -62,6 +62,7 @@ function Contact() {
                     enableTilt={false}
                     enableMagnetism={false}
                     enableStars={false}
+                    clickEffect={false}
                     spotlightRadius={240}
                   >
                     <span className="relative z-10 flex h-11 w-11 items-center justify-center border border-white/10 bg-white/5 text-[#93c5fd] transition group-hover:border-[#93c5fd]/40 group-hover:text-white">

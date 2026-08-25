@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { MOTION } from '../config/motion'
+import { subscribeToViewportUpdates } from '../utils/viewportScheduler'
 
 const OFFSETS = {
   up: (distance) => ({ x: 0, y: distance }),
@@ -31,7 +32,6 @@ function Reveal({
 
     let revealState = 'hidden'
     let hasAnimatedOnce = false
-    let frameId = 0
 
     const setRevealState = (state) => {
       revealState = state
@@ -98,7 +98,6 @@ function Reveal({
     hide(initialRect.bottom <= 0 ? 'above' : 'below')
 
     const evaluatePosition = () => {
-      frameId = 0
       const rect = getLayoutBounds()
       const revealLine = window.innerHeight * 0.9
       const isInsideRevealZone = rect.bottom > 0 && rect.top < revealLine
@@ -111,19 +110,10 @@ function Reveal({
       }
     }
 
-    const requestPositionCheck = () => {
-      if (frameId) return
-      frameId = requestAnimationFrame(evaluatePosition)
-    }
-
-    requestPositionCheck()
-    window.addEventListener('scroll', requestPositionCheck, { passive: true })
-    window.addEventListener('resize', requestPositionCheck)
+    const unsubscribe = subscribeToViewportUpdates(evaluatePosition)
 
     return () => {
-      window.removeEventListener('scroll', requestPositionCheck)
-      window.removeEventListener('resize', requestPositionCheck)
-      cancelAnimationFrame(frameId)
+      unsubscribe()
       gsap.killTweensOf(targets)
       gsap.set(targets, { clearProps: 'transform,opacity,willChange' })
       delete element.dataset.revealState

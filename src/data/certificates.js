@@ -155,14 +155,11 @@ const rawCertificates = [
   },
 ]
 
-// Certificate images live in public/certificates/<id>.<ext>.
-// Most are PNG; these were saved as JPG.
-const jpgIds = new Set(['aws-vpc', 'aws-iam-1', 'its-databases', 'asys-seminar'])
-
-// Attach derived fields (issuer meta + image path). The card/lightbox still
-// fall back to a branded placeholder if an image ever fails to load.
+// Web-sized JPEGs keep the certificate grid and lightbox responsive. Original
+// uploads remain in public/certificates for archival/reference purposes.
 export const certificates = rawCertificates.map((cert) => ({
   ...cert,
   issuer: issuers[cert.issuerKey],
-  image: `/certificates/${cert.id}.${jpgIds.has(cert.id) ? 'jpg' : 'png'}`,
+  image: `/certificates/display/${cert.id}.jpg`,
+  thumbnail: `/certificates/thumbnails/${cert.id}.jpg`,
 }))
