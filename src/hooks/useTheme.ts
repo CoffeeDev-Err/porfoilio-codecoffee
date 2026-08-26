@@ -5,8 +5,6 @@ import type { Theme } from '../types/portfolio'
 const THEME_STORAGE_KEY = 'portfolio-theme'
 
 interface ThemeToggleEvent {
-  clientX?: number
-  clientY?: number
   currentTarget?: EventTarget | null
 }
 
@@ -46,17 +44,12 @@ export function useTheme() {
       ? event.currentTarget
       : null
     const buttonBounds = button?.getBoundingClientRect()
-    const hasPointerPosition = Boolean(event?.clientX || event?.clientY)
-    const originX = hasPointerPosition
-      ? event?.clientX ?? window.innerWidth / 2
-      : buttonBounds?.left !== undefined
-        ? buttonBounds.left + buttonBounds.width / 2
-        : window.innerWidth / 2
-    const originY = hasPointerPosition
-      ? event?.clientY ?? 0
-      : buttonBounds?.top !== undefined
-        ? buttonBounds.top + buttonBounds.height / 2
-        : 0
+    const originX = buttonBounds
+      ? buttonBounds.left + buttonBounds.width / 2
+      : window.innerWidth - 32
+    const originY = buttonBounds
+      ? buttonBounds.top + buttonBounds.height / 2
+      : 32
     const radius = Math.hypot(
       Math.max(originX, window.innerWidth - originX),
       Math.max(originY, window.innerHeight - originY),
