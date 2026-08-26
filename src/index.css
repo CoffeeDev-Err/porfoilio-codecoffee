@@ -15,7 +15,7 @@
 	--project-card-background: rgba(23, 19, 31, 0.72);
 	--timeline-accent: 192, 132, 252;
 	--timeline-current: 134, 239, 172;
-	--theme-transition-duration: 1.15s;
+	--theme-transition-duration: 1.2s;
 	--theme-transition-ease: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
@@ -25,14 +25,14 @@
 	:root {
 		--theme-transition-ease: linear(
 			0,
-			0.02 10%,
-			0.08 20%,
-			0.18 30%,
-			0.32 40%,
-			0.5 50%,
-			0.68 60%,
-			0.82 70%,
-			0.92 80%,
+			0.06 10%,
+			0.2 20%,
+			0.42 30%,
+			0.64 40%,
+			0.76 50%,
+			0.84 60%,
+			0.9 70%,
+			0.945 80%,
 			0.98 90%,
 			1
 		);
@@ -85,6 +85,7 @@ body {
 
 ::view-transition-old(root) {
 	z-index: 1;
+	animation: theme-old-settle var(--theme-transition-duration) linear both;
 }
 
 ::view-transition-new(root) {
@@ -105,13 +106,14 @@ body {
 	}
 }
 
-@keyframes theme-soft-fade {
-	from {
-		opacity: 0;
+@keyframes theme-old-settle {
+	0%,
+	52% {
+		opacity: 1;
 	}
 
-	to {
-		opacity: 1;
+	100% {
+		opacity: 0;
 	}
 }
 
@@ -436,15 +438,5 @@ body {
 	.code-surface {
 		-webkit-backdrop-filter: none !important;
 		backdrop-filter: none !important;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	::view-transition-new(root) {
-		animation: theme-soft-fade 0.24s ease-out both;
-	}
-
-	.theme-toggle-icon {
-		transition-duration: 0.01ms;
 	}
 }
