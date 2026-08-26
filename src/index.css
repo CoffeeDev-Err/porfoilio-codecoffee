@@ -15,8 +15,8 @@
 	--project-card-background: rgba(23, 19, 31, 0.72);
 	--timeline-accent: 192, 132, 252;
 	--timeline-current: 134, 239, 172;
-	--theme-transition-duration: 0.92s;
-	--theme-transition-ease: cubic-bezier(0.42, 0, 0.22, 1);
+	--theme-transition-duration: 1.05s;
+	--theme-transition-ease: cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 :root[data-theme="light"] {
