@@ -15,6 +15,8 @@
 	--project-card-background: rgba(23, 19, 31, 0.72);
 	--timeline-accent: 192, 132, 252;
 	--timeline-current: 134, 239, 172;
+	--theme-transition-duration: 0.92s;
+	--theme-transition-ease: cubic-bezier(0.42, 0, 0.22, 1);
 }
 
 :root[data-theme="light"] {
@@ -56,22 +58,30 @@ body {
 	mix-blend-mode: normal;
 }
 
+::view-transition-group(root) {
+	animation-duration: var(--theme-transition-duration);
+	animation-timing-function: var(--theme-transition-ease);
+}
+
 ::view-transition-old(root) {
 	z-index: 1;
 }
 
 ::view-transition-new(root) {
 	z-index: 2;
-	animation: theme-radial-reveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: theme-radial-reveal var(--theme-transition-duration) var(--theme-transition-ease) both;
+	will-change: clip-path;
 }
 
 @keyframes theme-radial-reveal {
 	from {
 		clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+		opacity: 0.94;
 	}
 
 	to {
 		clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+		opacity: 1;
 	}
 }
 
@@ -411,7 +421,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
 	::view-transition-new(root) {
-		animation: theme-soft-fade 0.18s ease-out both;
+		animation: theme-soft-fade 0.24s ease-out both;
 	}
 
 	.theme-toggle-icon {
