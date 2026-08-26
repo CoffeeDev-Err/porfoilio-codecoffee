@@ -195,6 +195,8 @@ These items are intentionally kept beside their markup because they are used by 
 - `src/components/layout/SiteBackground.jsx` changes the animated background grid colors for each theme.
 - `src/components/layout/Header.jsx` displays the `theme.light()` or `theme.dark()` command.
 
+Theme changes use a radial View Transition that expands from the toggle button. Browsers without View Transition support keep the existing color fade, while reduced-motion preferences use a brief opacity fade instead of the radial movement.
+
 ## Navigation and scroll motion
 
 The top bar intentionally keeps only the primary links: About, Skills, Projects, and Contact. Education and Certificates remain full sections in the page flow but are omitted from the header to reduce clutter.

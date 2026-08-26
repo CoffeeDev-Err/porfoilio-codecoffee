@@ -48,6 +48,57 @@ body {
 	transition: background-color 0.5s ease;
 }
 
+/* The incoming theme expands from the toggle button. View Transitions keep
+   this on the compositor, while unsupported browsers retain color fades. */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+	z-index: 1;
+}
+
+::view-transition-new(root) {
+	z-index: 2;
+	animation: theme-radial-reveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes theme-radial-reveal {
+	from {
+		clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+	}
+
+	to {
+		clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+	}
+}
+
+@keyframes theme-soft-fade {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+:root[data-theme-transitioning="true"] *,
+:root[data-theme-transitioning="true"] *::before,
+:root[data-theme-transitioning="true"] *::after {
+	transition: none !important;
+}
+
+.theme-toggle-icon {
+	transition: rotate 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="light"] .theme-toggle-icon {
+	rotate: 180deg;
+}
+
 ::selection {
 	background: var(--selection-background);
 	color: var(--selection-text);
@@ -355,5 +406,15 @@ body {
 	.code-surface {
 		-webkit-backdrop-filter: none !important;
 		backdrop-filter: none !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-new(root) {
+		animation: theme-soft-fade 0.18s ease-out both;
+	}
+
+	.theme-toggle-icon {
+		transition-duration: 0.01ms;
 	}
 }
