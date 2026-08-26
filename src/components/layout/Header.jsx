@@ -115,6 +115,7 @@ function Header({ onNavigate, onToggleTheme, theme }) {
 
             <button
               type="button"
+              data-theme-toggle
               aria-label={`Switch to ${nextTheme} theme`}
               title={`Switch to ${nextTheme} theme`}
               onClick={onToggleTheme}

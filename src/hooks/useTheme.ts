@@ -4,10 +4,6 @@ import type { Theme } from '../types/portfolio'
 
 const THEME_STORAGE_KEY = 'portfolio-theme'
 
-interface ThemeToggleEvent {
-  currentTarget?: EventTarget | null
-}
-
 interface ViewTransitionHandle {
   finished: Promise<void>
   ready: Promise<void>
@@ -34,15 +30,13 @@ export function useTheme() {
     window.localStorage.setItem(THEME_STORAGE_KEY, theme)
   }, [theme])
 
-  const toggleTheme = useCallback((event?: ThemeToggleEvent) => {
+  const toggleTheme = useCallback(() => {
     if (isTransitioningRef.current) return
 
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark'
     const root = document.documentElement
     const viewTransitionDocument = document as ViewTransitionDocument
-    const button = event?.currentTarget instanceof HTMLElement
-      ? event.currentTarget
-      : null
+    const button = document.querySelector<HTMLElement>('[data-theme-toggle]')
     const buttonBounds = button?.getBoundingClientRect()
     const originX = buttonBounds
       ? buttonBounds.left + buttonBounds.width / 2
