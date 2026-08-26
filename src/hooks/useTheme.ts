@@ -1,8 +1,9 @@
 import { useCallback, useLayoutEffect, useState } from 'react'
+import type { Theme } from '../types/portfolio'
 
 const THEME_STORAGE_KEY = 'portfolio-theme'
 
-function getInitialTheme() {
+function getInitialTheme(): Theme {
   const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY)
   if (savedTheme === 'light' || savedTheme === 'dark') return savedTheme
 
@@ -10,7 +11,7 @@ function getInitialTheme() {
 }
 
 export function useTheme() {
-  const [theme, setTheme] = useState(getInitialTheme)
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme

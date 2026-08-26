@@ -1,13 +1,21 @@
 import { useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
 import { gsap } from 'gsap'
 import { subscribeToViewportUpdates } from '../utils/viewportScheduler'
 
 const TOP_THRESHOLD = 88
 const DIRECTION_THRESHOLD = 4
 
-export function useHeaderVisibility(headerRef, { locked = false } = {}) {
-  const lastScrollYRef = useRef(0)
-  const hiddenRef = useRef(false)
+interface HeaderVisibilityOptions {
+  locked?: boolean
+}
+
+export function useHeaderVisibility(
+  headerRef: RefObject<HTMLElement | null>,
+  { locked = false }: HeaderVisibilityOptions = {},
+) {
+  const lastScrollYRef = useRef<number>(0)
+  const hiddenRef = useRef<boolean>(false)
 
   useEffect(() => {
     const header = headerRef.current
@@ -15,7 +23,7 @@ export function useHeaderVisibility(headerRef, { locked = false } = {}) {
 
     lastScrollYRef.current = window.scrollY
 
-    const setHidden = (hidden) => {
+    const setHidden = (hidden: boolean) => {
       if (hiddenRef.current === hidden) return
       hiddenRef.current = hidden
 

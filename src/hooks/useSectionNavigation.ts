@@ -3,6 +3,10 @@ import { gsap } from 'gsap'
 import { HEADER_OFFSET } from '../config/navigation'
 import { MOTION } from '../config/motion'
 
+interface NavigationEvent {
+  preventDefault: () => void
+}
+
 const SCROLL_CANCEL_KEYS = new Set([
   'ArrowDown',
   'ArrowUp',
@@ -13,9 +17,10 @@ const SCROLL_CANCEL_KEYS = new Set([
   ' ',
 ])
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max)
 
-function getScrollDuration(distance) {
+function getScrollDuration(distance: number) {
   return clamp(
     0.55 + distance / 2200,
     MOTION.scrollMinDuration,
@@ -24,14 +29,17 @@ function getScrollDuration(distance) {
 }
 
 export function useSectionNavigation() {
-  const activeTweenRef = useRef(null)
+  const activeTweenRef = useRef<gsap.core.Tween | null>(null)
 
   const stopActiveScroll = useCallback(() => {
     activeTweenRef.current?.kill()
     activeTweenRef.current = null
   }, [])
 
-  const navigateToSection = useCallback((event, href) => {
+  const navigateToSection = useCallback((
+    event: NavigationEvent | undefined,
+    href: string,
+  ) => {
     if (!href?.startsWith('#')) return
 
     const target = document.getElementById(href.slice(1))
@@ -64,7 +72,7 @@ export function useSectionNavigation() {
   }, [stopActiveScroll])
 
   useEffect(() => {
-    const cancelOnKey = (event) => {
+    const cancelOnKey = (event: KeyboardEvent) => {
       if (SCROLL_CANCEL_KEYS.has(event.key)) stopActiveScroll()
     }
 

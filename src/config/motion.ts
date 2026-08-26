@@ -5,4 +5,4 @@ export const MOTION = {
   scrollEase: 'power2.inOut',
   scrollMinDuration: 0.7,
   scrollMaxDuration: 1.25,
-}
+} as const

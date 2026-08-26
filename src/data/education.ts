@@ -1,3 +1,5 @@
+import type { EducationEntry } from '../types/portfolio'
+
 export const educationHistory = [
   {
     id: 'senior-high-school',
@@ -15,4 +17,4 @@ export const educationHistory = [
     school: 'Isabela State University – Cabagan Campus',
     status: 'current',
   },
-]
+] satisfies readonly EducationEntry[]

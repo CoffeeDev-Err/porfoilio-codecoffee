@@ -1,3 +1,5 @@
+import type { Project } from '../types/portfolio'
+
 export const clientProjects = [
   {
     id: 'pos-system-firebase',
@@ -32,7 +34,7 @@ export const clientProjects = [
       { label: 'IoT / Tracking', items: ['Flespi'] },
     ],
   },
-]
+] satisfies readonly Project[]
 
 export const academicProjects = [
   {
@@ -43,4 +45,4 @@ export const academicProjects = [
     technologies: ['Case Studies', 'Screenshots', 'Source Code'],
     comingSoon: true,
   },
-]
+] satisfies readonly Project[]

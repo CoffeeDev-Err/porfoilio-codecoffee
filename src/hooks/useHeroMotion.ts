@@ -1,10 +1,11 @@
 import { useEffect, useLayoutEffect } from 'react'
+import type { RefObject } from 'react'
 import { gsap } from 'gsap'
 import { subscribeToViewportUpdates } from '../utils/viewportScheduler'
 
-const clampProgress = (value) => Math.min(Math.max(value, 0), 1)
+const clampProgress = (value: number) => Math.min(Math.max(value, 0), 1)
 
-export function useHeroIntro(sectionRef) {
+export function useHeroIntro(sectionRef: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     if (!sectionRef.current) return
 
@@ -26,7 +27,10 @@ export function useHeroIntro(sectionRef) {
   }, [sectionRef])
 }
 
-export function useHeroParallax(sectionRef, contentRef) {
+export function useHeroParallax(
+  sectionRef: RefObject<HTMLElement | null>,
+  contentRef: RefObject<HTMLElement | null>,
+) {
   useEffect(() => {
     const section = sectionRef.current
     const content = contentRef.current
@@ -58,7 +62,10 @@ export function useHeroParallax(sectionRef, contentRef) {
   }, [contentRef, sectionRef])
 }
 
-export function useActionReveal(actionsRef, isVisible) {
+export function useActionReveal(
+  actionsRef: RefObject<HTMLElement | null>,
+  isVisible: boolean,
+) {
   useLayoutEffect(() => {
     if (!isVisible || !actionsRef.current) return
 
@@ -76,6 +83,8 @@ export function useActionReveal(actionsRef, isVisible) {
       },
     )
 
-    return () => tween.kill()
+    return () => {
+      tween.kill()
+    }
   }, [actionsRef, isVisible])
 }

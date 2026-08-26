@@ -2,6 +2,8 @@
 
 This guide shows where the editable portfolio content, profile image, navigation, theme, and motion settings live. The data is kept outside the section components whenever it is shared or likely to change.
 
+React view components intentionally remain `.jsx`; reusable data, configuration, hooks, utilities, and shared types use `.ts`.
+
 ## Profile image
 
 The currently selected image is:
@@ -10,9 +12,9 @@ The currently selected image is:
 public/cat.jpg
 ```
 
-Its public URL is stored in [`src/data/profile.js`](src/data/profile.js):
+Its public URL is stored in [`src/data/profile.ts`](src/data/profile.ts):
 
-```js
+```ts
 export const profile = {
   imageUrl: '/cat.jpg',
 }
@@ -29,13 +31,13 @@ The Hero reads that value in [`src/components/sections/Hero.jsx`](src/components
 
 To restore the portrait that already exists at `public/profile.jpg`, change only this value:
 
-```js
+```ts
 imageUrl: '/profile.jpg',
 ```
 
 To use `profile.png` later, place it at `public/profile.png` and use:
 
-```js
+```ts
 imageUrl: '/profile.png',
 ```
 
@@ -43,9 +45,9 @@ Files inside `public` are referenced from `/`; do not include `public` in the br
 
 ## Centralized headings and hero text
 
-All section titles and descriptions are in [`src/data/content.js`](src/data/content.js):
+All section titles and descriptions are in [`src/data/content.ts`](src/data/content.ts):
 
-```js
+```ts
 export const heroContent = {
   eyebrow: 'building web and mobile experiences',
   description: '/* Web and mobile developer focused on responsive interfaces, reliable APIs, and useful digital products. */',
@@ -92,7 +94,7 @@ export const sectionContent = {
 
 `SectionHeading` automatically wraps each `title` in code-style angle brackets. This value:
 
-```js
+```ts
 title: 'Turning concepts into real-world applications'
 ```
 
@@ -104,9 +106,9 @@ is displayed as:
 
 ## Profile details and links
 
-Identity, education, image, contact information, and external links are centralized in [`src/data/profile.js`](src/data/profile.js):
+Identity, education, image, contact information, and external links are centralized in [`src/data/profile.ts`](src/data/profile.ts):
 
-```js
+```ts
 export const profile = {
   name: 'Leo B. Gannad',
   fullName: 'Leo Bucasas Gannad',
@@ -125,9 +127,9 @@ export const profile = {
 
 ## Education timeline
 
-Education entries are stored in [`src/data/education.js`](src/data/education.js), separate from the timeline layout:
+Education entries are stored in [`src/data/education.ts`](src/data/education.ts), separate from the timeline layout:
 
-```js
+```ts
 export const educationHistory = [
   {
     period: '2022–2023',
@@ -152,22 +154,22 @@ Use `Present` while currently studying. Replace it with the graduation year afte
 
 | Editable item or behavior | Source file | Export/component |
 | --- | --- | --- |
-| Hero eyebrow and static description | `src/data/content.js` | `heroContent` |
-| Section numbers, headings, descriptions | `src/data/content.js` | `sectionContent` |
-| Name, role, education, profile image, and links | `src/data/profile.js` | `profile` |
-| Education timeline entries | `src/data/education.js` | `educationHistory` |
-| Skill groups, including Express.js | `src/data/skills.js` | `skillGroups` |
-| Certificate records and filter categories | `src/data/certificates.js` | `certificates`, `certificateCategories` |
-| Client and academic project records | `src/data/projects.js` | `clientProjects`, `academicProjects` |
-| Header navigation links and scroll offset | `src/config/navigation.js` | `NAV_LINKS`, `HEADER_OFFSET` |
-| Reveal and smooth-scroll timing | `src/config/motion.js` | `MOTION` |
-| Light/dark state and local storage | `src/hooks/useTheme.js` | `useTheme` |
-| Smooth section navigation | `src/hooks/useSectionNavigation.js` | `useSectionNavigation` |
-| Current-section detection | `src/hooks/useActiveSection.js` | `useActiveSection` |
-| Scroll-direction header visibility | `src/hooks/useHeaderVisibility.js` | `useHeaderVisibility` |
-| Mobile menu open/close animation | `src/hooks/useMobileMenuMotion.js` | `useMobileMenuMotion` |
-| Hero entrance, parallax, and button motion | `src/hooks/useHeroMotion.js` | Hero motion hooks |
-| Shared scroll/resize frame scheduler | `src/utils/viewportScheduler.js` | `subscribeToViewportUpdates` |
+| Hero eyebrow and static description | `src/data/content.ts` | `heroContent` |
+| Section numbers, headings, descriptions | `src/data/content.ts` | `sectionContent` |
+| Name, role, education, profile image, and links | `src/data/profile.ts` | `profile` |
+| Education timeline entries | `src/data/education.ts` | `educationHistory` |
+| Skill groups, including Express.js | `src/data/skills.ts` | `skillGroups` |
+| Certificate records and filter categories | `src/data/certificates.ts` | `certificates`, `certificateCategories` |
+| Client and academic project records | `src/data/projects.ts` | `clientProjects`, `academicProjects` |
+| Header navigation links and scroll offset | `src/config/navigation.ts` | `NAV_LINKS`, `HEADER_OFFSET` |
+| Reveal and smooth-scroll timing | `src/config/motion.ts` | `MOTION` |
+| Light/dark state and local storage | `src/hooks/useTheme.ts` | `useTheme` |
+| Smooth section navigation | `src/hooks/useSectionNavigation.ts` | `useSectionNavigation` |
+| Current-section detection | `src/hooks/useActiveSection.ts` | `useActiveSection` |
+| Scroll-direction header visibility | `src/hooks/useHeaderVisibility.ts` | `useHeaderVisibility` |
+| Mobile menu open/close animation | `src/hooks/useMobileMenuMotion.ts` | `useMobileMenuMotion` |
+| Hero entrance, parallax, and button motion | `src/hooks/useHeroMotion.ts` | Hero motion hooks |
+| Shared scroll/resize frame scheduler | `src/utils/viewportScheduler.ts` | `subscribeToViewportUpdates` |
 | Reusable scroll reveal | `src/components/Reveal.jsx` | `Reveal` |
 | Reusable interactive cards | `src/components/MagicCard.jsx` | `MagicCard` |
 | Reusable editor window bar | `src/components/ui/CodeWindowBar.jsx` | `CodeWindowBar` |
@@ -188,7 +190,7 @@ These items are intentionally kept beside their markup because they are used by 
 
 ## Theme files
 
-- `src/hooks/useTheme.js` controls switching, saved preference, and system preference.
+- `src/hooks/useTheme.ts` controls switching, saved preference, and system preference.
 - `src/index.css` contains shared dark/light tokens, surfaces, text mappings, focus styles, selection colors, and scrollbars.
 - `src/components/layout/SiteBackground.jsx` changes the animated background grid colors for each theme.
 - `src/components/layout/Header.jsx` displays the `theme.light()` or `theme.dark()` command.
@@ -203,11 +205,11 @@ Reveal directions remain active even when the operating system disables general 
 
 ## Performance behavior
 
-- `src/utils/viewportScheduler.js` gives reveals, the header, and hero parallax one shared scroll/resize listener and one animation-frame batch.
+- `src/utils/viewportScheduler.ts` gives reveals, the header, and hero parallax one shared scroll/resize listener and one animation-frame batch.
 - `src/components/layout/ScrollProgress.jsx` uses that same scheduler and updates only a GPU-friendly horizontal scale transform.
 - `src/components/ShapeGrid.jsx` renders at a capped frame rate and pauses expensive canvas drawing during active scrolling, hidden tabs, and open dialogs.
 - `src/components/MagicCard.jsx` batches pointer updates into animation frames and reuses the card bounds while hovered.
-- Certificate cards load small files from `public/certificates/thumbnails`; lightboxes use the web-sized files in `public/certificates/display`. Original uploads remain in `public/certificates`.
+- Certificate cards load small files from `public/certificates/thumbnails`; lightboxes use the web-sized files in `public/certificates/display`. Redundant source copies were removed and remain recoverable from Git history.
 - Mobile cards disable backdrop filtering to reduce GPU compositing work while preserving their surface colors.
 
 ## Validation
@@ -215,6 +217,7 @@ Reveal directions remain active even when the operating system disables general 
 After changing content or code, run:
 
 ```bash
+npm run typecheck
 npm run lint
 npm run build
 ```

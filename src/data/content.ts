@@ -1,7 +1,9 @@
+import type { HeroContent, SectionContent } from '../types/portfolio'
+
 export const heroContent = {
   eyebrow: 'building web and mobile experiences',
   description: '/* Web and mobile developer focused on responsive interfaces, reliable APIs, and useful digital products. */',
-}
+} satisfies HeroContent
 
 export const sectionContent = {
   about: {
@@ -39,4 +41,4 @@ export const sectionContent = {
     title: "Let's build something useful",
     description: 'Open to web and mobile development opportunities, internships, and collaborations. Choose a channel below to get in touch.',
   },
-}
+} satisfies Record<string, SectionContent>

@@ -1,12 +1,16 @@
 import { useLayoutEffect } from 'react'
+import type { RefObject } from 'react'
 import { gsap } from 'gsap'
 
-export function useMobileMenuMotion(panelRef, isOpen) {
+export function useMobileMenuMotion(
+  panelRef: RefObject<HTMLElement | null>,
+  isOpen: boolean,
+) {
   useLayoutEffect(() => {
     const panel = panelRef.current
     if (!panel) return
 
-    const items = Array.from(panel.querySelectorAll('[data-mobile-menu-item]'))
+    const items = Array.from(panel.querySelectorAll<HTMLElement>('[data-mobile-menu-item]'))
     const targets = [panel, ...items]
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -61,6 +65,8 @@ export function useMobileMenuMotion(panelRef, isOpen) {
         }, 0.03)
     }
 
-    return () => timeline.kill()
+    return () => {
+      timeline.kill()
+    }
   }, [isOpen, panelRef])
 }

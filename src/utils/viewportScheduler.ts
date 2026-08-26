@@ -1,9 +1,11 @@
-const subscribers = new Set()
+type ViewportSubscriber = (timestamp: number) => void
+
+const subscribers = new Set<ViewportSubscriber>()
 
 let frameId = 0
 let listening = false
 
-function flushUpdates(timestamp) {
+function flushUpdates(timestamp: number) {
   frameId = 0
   subscribers.forEach((callback) => callback(timestamp))
 }
@@ -32,7 +34,7 @@ function stopListening() {
   }
 }
 
-export function subscribeToViewportUpdates(callback) {
+export function subscribeToViewportUpdates(callback: ViewportSubscriber): () => void {
   subscribers.add(callback)
   startListening()
   scheduleUpdates()

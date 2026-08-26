@@ -1,10 +1,7 @@
-// Certificate data for the portfolio.
-//
-// To show the real scanned certificate, drop the image into
-//   public/certificates/<id>.png
-// using the matching `id` below (e.g. public/certificates/aws-vpc.png).
-// Until a file exists, the card + lightbox fall back to a branded placeholder,
-// so the site always looks complete.
+import type { Certificate, CertificateIssuer, RawCertificate } from '../types/portfolio'
+
+// Certificate data for the portfolio. Cards and lightboxes use web-optimized
+// images from the thumbnails and display folders.
 
 export const issuers = {
   aws: { label: 'AWS Training & Certification', short: 'AWS', accent: '#FF9900', bg: '#232F3E' },
@@ -13,10 +10,17 @@ export const issuers = {
   itSpecialist: { label: 'IT Specialist · Certiport', short: 'IT Specialist', accent: '#22B8CC', bg: '#0c2b30' },
   asys: { label: 'A-Sys', short: 'A-Sys', accent: '#A855F7', bg: '#241447' },
   spup: { label: 'St. Paul University Philippines', short: 'SPUP', accent: '#2BB98A', bg: '#0b2a1f' },
-}
+} as const satisfies Record<string, CertificateIssuer>
 
 // Filter tabs shown above the certificate grid.
-export const categories = ['All', 'AWS', 'Huawei', 'IT Specialist', 'Seminars & Events']
+export const categories = ['All', 'AWS', 'Huawei', 'IT Specialist', 'Seminars & Events'] as const
+
+type IssuerKey = keyof typeof issuers
+type CertificateCategory = Exclude<(typeof categories)[number], 'All'>
+type CertificateSource = Omit<RawCertificate, 'issuerKey' | 'category'> & {
+  issuerKey: IssuerKey
+  category: CertificateCategory
+}
 
 const rawCertificates = [
   {
@@ -153,11 +157,10 @@ const rawCertificates = [
     dateLabel: 'March 11, 2025',
     credentialId: 'ICT20250311000020',
   },
-]
+] satisfies readonly CertificateSource[]
 
-// Web-sized JPEGs keep the certificate grid and lightbox responsive. Original
-// uploads remain in public/certificates for archival/reference purposes.
-export const certificates = rawCertificates.map((cert) => ({
+// Web-sized JPEGs keep the certificate grid and lightbox responsive.
+export const certificates: Certificate[] = rawCertificates.map((cert) => ({
   ...cert,
   issuer: issuers[cert.issuerKey],
   image: `/certificates/display/${cert.id}.jpg`,

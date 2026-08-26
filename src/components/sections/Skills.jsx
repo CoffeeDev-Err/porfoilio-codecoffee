@@ -25,7 +25,7 @@ function Skills() {
             >
               <div className="relative z-10">
                 <div className="mb-5 flex items-center justify-between border-b border-white/8 pb-3 font-mono text-xs">
-                  <span className="text-[#93c5fd]">skills.config.js</span>
+                  <span className="text-[#93c5fd]">skills.config.ts</span>
                   <span className="text-white/20">{String(index + 1).padStart(2, '0')}</span>
                 </div>
                 <h3 className="font-mono text-lg font-semibold text-white">

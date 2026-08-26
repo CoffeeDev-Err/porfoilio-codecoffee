@@ -1,4 +1,6 @@
 // Skill groups shown in the Skills section — Leo's working tech stack.
+import type { SkillGroup } from '../types/portfolio'
+
 export const skillGroups = [
   {
     title: 'Frontend & Mobile',
@@ -20,4 +22,4 @@ export const skillGroups = [
     blurb: 'The version control, editor, and AI-assisted tooling I build with.',
     skills: ['Git', 'GitHub', 'VS Code', 'Codex', 'Claude Code'],
   },
-]
+] satisfies readonly SkillGroup[]
