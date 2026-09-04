@@ -1,4 +1,4 @@
-# Leo Gannad â€” Developer Portfolio
+# Leo Gannad — Developer Portfolio
 
 A responsive personal portfolio for Leo Gannad, a web and mobile developer based in the Philippines. The site presents selected projects, technical skills, education, certifications, and contact information in an animated single-page experience.
 
